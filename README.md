@@ -1,151 +1,85 @@
-# 🚨 Kripto Alarm Sistemi
+# Pinger v2.0 — Crypto Alert System
 
-**Binance'deki tüm coinleri 7/24 izler, hacim patlamaları ve fiyat hareketlerinde Telegram'dan bildirim gönderir.**
+Real-time cryptocurrency scanner for Binance. Monitors 500+ USDT pairs 24/7 and sends instant Telegram alerts on volume spikes, price breakouts, and momentum signals. Includes LSTM AI predictions, paper trading, and backtesting.
 
----
+## Features
 
-## 🎯 Ne Yapar?
+- **Real-time scanning:** All Binance USDT pairs every 15 seconds
+- **Volume spike detection:** Alerts when volume exceeds 2x the 20-period average
+- **Price breakout alerts:** Configurable min/max % thresholds
+- **LSTM AI predictions:** Machine learning model for early signal detection
+- **Momentum strategy:** EMA, RSI, MACD-based signal scoring
+- **Paper trading:** Simulate trades with $1000 virtual balance
+- **Backtesting:** Walk-forward engine on 90-day historical data
+- **Telegram notifications:** Instant alerts with coin details and Binance link
+- **Spam protection:** 60-minute cooldown per coin
+- **Low-volume filter:** Ignores pairs under $500K daily volume
 
-- ✅ **Tüm Binance USDT paritelerini izler** (500+ coin)
-- ✅ **Ani hacim artışlarını yakalar** (örn: hacim 3 katına çıktığında)
-- ✅ **Fiyat patlamalarını bildirir** (örn: %8+ değişim)
-- ✅ **Binance yeni listeleme duyurularını takip eder**
-- ✅ **Telegram'a anlık bildirim gönderir**
-- ✅ **Spam önleme** (aynı coin için 1 saatte 1 alarm)
-- ✅ **Küçük hacimli coinleri filtreler** (scam coinleri görmezden gelir)
+## Modes
 
----
+| Mode | Description |
+|------|-------------|
+| `alarm` | Scan & alert only, no trades |
+| `paper` | Simulate trades with virtual balance |
+| `backtest` | Test strategy on 90-day history |
+| `live` | Real trading (use after testing!) |
 
-## ⚡ Hızlı Başlangıç
-
-### 1️⃣ Telegram Bot Kur (2 dakika)
-
-1. Telegram'da `@BotFather` aç → `/newbot` gönder
-2. Bot ismi ve kullanıcı adı ver
-3. TOKEN'ı al ve not et
-4. `@userinfobot` aç → `/start` gönder
-5. CHAT ID'ni al ve not et
-
-### 2️⃣ Sistemi Çalıştır (1 dakika)
+## Quick Start
 
 ```bash
-# 1. crypto_alert_system.py dosyasını aç
-# 2. Satır 18-19'a TOKEN ve CHAT_ID yapıştır
-# 3. Terminalde çalıştır:
+# 1. Install dependencies
+pip install -r requirements.txt
 
+# 2. Configure secrets
+cp .env.example .env
+# Fill in TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID
+
+# 3. Run
 ./start.sh
+# or: python main.py
 ```
 
-**Hepsi bu!** 🎉
+> See [KURULUM.md](KURULUM.md) for full setup guide including Telegram bot creation and VPS deployment.
 
----
+## Configuration
 
-## 📊 Örnek Alarm
+All parameters in `config.yaml` — no secrets there:
 
-```
-🚨 HACİM VE FİYAT PATLADI!
+```yaml
+signals:
+  volume_spike_multiplier: 2.0   # Alert when volume > 2x average
+  price_change_min: 2.5          # Minimum % move to trigger alert
+  min_signal_score: 7            # AI/momentum score threshold
 
-💎 Coin: QKC/USDT
-💰 Fiyat: $0.00512340
-📈 Fiyat Değişimi: +12.45%
-📊 Hacim Artışı: x4.2
-💵 24h Hacim: $2,450,000
-⏰ Zaman: 14:35:22
-
-🔗 Binance'de Aç
-```
-
----
-
-## ⚙️ Ayarlar (Opsiyonel)
-
-[crypto_alert_system.py](crypto_alert_system.py) dosyasında (satır 21-28):
-
-```python
-VOLUME_MULTIPLIER = 3.0      # Hacim eşiği (2.0 = daha hassas, 5.0 = daha az alarm)
-PRICE_CHANGE_PERCENT = 8.0   # Fiyat değişim eşiği (5.0 = daha hassas)
-MIN_VOLUME_USDT = 100000     # Min. 24h hacim (küçük coinleri filtrele)
-CHECK_INTERVAL = 60          # Kontrol sıklığı (saniye)
+risk:
+  take_profit_pct: 10.0
+  stop_loss_pct: 7.0
+  max_daily_trades: 5
 ```
 
----
-
-## 📁 Dosyalar
+## Project Structure
 
 ```
 pinger/
-├── crypto_alert_system.py   # Ana sistem (çalıştır bunu)
-├── requirements.txt          # Python paketleri
-├── start.sh                  # Başlatma scripti (Mac/Linux)
-├── KURULUM.md               # Detaylı kurulum kılavuzu
-└── README.md                # Bu dosya
+├── ai/                  # LSTM model & data fetcher
+├── backtest/            # Walk-forward backtesting engine
+├── core/                # Scanner, signals, filters, orderbook
+├── notifications/       # Telegram alert sender
+├── strategies/          # Momentum strategy
+├── trading/             # Paper trader
+├── utils/               # Logger, database
+├── main.py              # Entry point
+├── config.yaml          # All settings (no secrets)
+└── .env.example         # Secret keys template
 ```
 
----
+## Tech Stack
 
-## 🛠️ Sorun Giderme
+- Python 3.11+
+- Binance REST API + WebSocket
+- TensorFlow / Keras (LSTM)
+- SQLite
 
-### "Telegram gönderim hatası"
-- TOKEN ve CHAT_ID doğru mu?
-- Botu `/start` ile aktive ettin mi?
+## Disclaimer
 
-### "Module not found"
-```bash
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-### "Rate limit"
-- `CHECK_INTERVAL = 120` yap (2 dakika)
-
----
-
-## 💡 İpuçları
-
-1. **7/24 çalışsın ister misin?**
-   - Bulut: Replit, PythonAnywhere, AWS
-   - Evde: Raspberry Pi, eski laptop
-
-2. **Belirli coinleri görmezden gel:**
-   ```python
-   BLACKLIST = ['USDT', 'BTC', 'ETH']  # İstemediğin coinler
-   ```
-
-3. **Her alarm için işlem yapma!**
-   - False alarm olabilir
-   - Kendi araştırmanı yap
-   - Stop-loss kullan
-
----
-
-## ⚠️ Uyarı
-
-- ❌ Finansal tavsiye değildir
-- ❌ Para kaybetme riski vardır
-- ❌ Garantili kazanç yoktur
-- ✅ Sadece bilgi amaçlıdır
-
----
-
-## 🚀 Gelişmiş Özellikler (İsteğe Bağlı)
-
-Şunları da ekleyebiliriz:
-
-- [ ] Whale Alert API (büyük transferler)
-- [ ] Twitter sentiment analizi
-- [ ] Kore borsaları (Upbit/Bithumb)
-- [ ] Discord bildirimleri
-- [ ] Web arayüzü
-- [ ] Otomatik alım-satım (risky!)
-
-İstersen söyle, eklerim! 🎯
-
----
-
-## 📞 Destek
-
-Bir sorun olursa bana sor! 🙌
-
----
-
-**🔥 Başarılar! Şimdi git Telegram bot ayarlarını yap ve sistemi başlat!**
+This project is for **educational purposes only**. Crypto trading carries significant financial risk. Never trade with money you cannot afford to lose.
