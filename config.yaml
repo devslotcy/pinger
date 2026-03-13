@@ -1,0 +1,87 @@
+# ============================================================
+# Pinger v2.0 - Ayar Dosyası
+# Buradaki sayıları değiştirerek botu ayarlarsın.
+# ============================================================
+
+
+# ---- BORSA AYARLARI ----------------------------------------
+exchange:
+  name: "binance"
+  quote_currency: "USDT"
+  rate_limit_delay: 0.1    # Her API isteği arasında kaç saniye bekle (düşürme)
+  max_retries: 3            # Hata olursa kaç kere tekrar denesin
+
+
+# ---- TARAMA AYARLARI ---------------------------------------
+scanning:
+  interval_seconds: 15     # Kaç saniyede bir tüm coinleri tara (VIP için 1 yap)
+  min_volume_usdt: 500000  # Günlük hacmi bu dolardan az coinleri atla (500bin$)
+  max_pairs: 500           # Aynı anda kaç coin taransın (Binance'te 500+ var)
+
+
+# ---- SİNYAL AYARLARI (ne zaman alarm versin) ---------------
+signals:
+  volume_spike_multiplier: 2.0  # Hacim normalden 2x artmalı (eskiden 1.2x = çok düşüktü)
+  price_change_min: 2.5         # Fiyat 15 dakikada en az %2.5 hareket etmeli (eskiden %1.5)
+  price_change_max: 12.0        # Pump filtresi
+  min_signal_score: 7           # Minimum skor 7 (eskiden 5 = çok düşüktü, çöp sinyal geliyordu)
+  cooldown_minutes: 60          # Aynı coinden 1 saat geçmeden tekrar alarm verme (eskiden 30dk)
+
+
+# ---- RİSK YÖNETİMİ ----------------------------------------
+risk:
+  take_profit_pct: 10.0         # Kar al: fiyat %10 artarsa sat (TP)
+  stop_loss_pct: 7.0            # Zarar kes: fiyat %7 düşerse sat (SL)
+  max_portfolio_risk_pct: 2.0   # Her işlemde portföyünün en fazla %2'sini riske at
+  max_daily_trades: 5           # Günde en fazla 5 işlem yap
+
+
+# ---- YAPAY ZEKA (LSTM) AYARLARI ----------------------------
+# Botu eğitmek için kullandığı beyin, dokunmana gerek yok genelde
+lstm:
+  sequence_length: 60    # Kaç önceki muma bakarak tahmin yapsın (60 mum = 60 dakika)
+  hidden_size: 128       # Yapay zekanın "hafıza kapasitesi" - büyütürsen daha akıllı ama yavaş
+  num_layers: 2          # Kaç katmanlı beyin (2 yeterli)
+  dropout: 0.2           # Ezberlemesini önleyen ayar (0.2 = %20 rastgele kapat)
+  learning_rate: 0.001   # Öğrenme hızı - çok yüksek yaparsan kötü öğrenir
+  epochs: 50             # Eğitim sırasında veriyi kaç kez okusun (50 tur)
+  batch_size: 32         # Aynı anda kaç örneği birlikte öğrensin
+  train_days: 90         # Eğitmek için kaç günlük geçmiş veri çeksin (90 gün)
+  timeframe: "1m"        # Hangi mum aralığı (1m = 1 dakikalık mumlar)
+  predict_bars: 30       # Kaç dakika sonrasını tahmin etsin (30 = yarım saat sonrası)
+  retrain_hours: 24      # Kaç saatte bir yeniden eğitsin (24 = günde bir)
+  min_accuracy: 0.73     # Doğruluk %73'ün altına düşerse yeniden eğit
+
+
+# ---- MOMENTUM STRATEJİSİ AYARLARI -------------------------
+momentum:
+  rsi_period: 14
+  rsi_oversold: 28       # Daha sert eşik: 30 değil 28 (gerçekten aşırı satılmış olmalı)
+  rsi_overbought: 72     # Daha sert eşik: 70 değil 72
+  macd_fast: 12
+  macd_slow: 26
+  macd_signal: 9
+  min_momentum_score: 7  # Momentum için de minimum 7 (eskiden 6)
+
+
+# ---- KARA LİSTE -------------------------------------------
+blacklist:
+  symbols: []            # Bu coinleri hiç tarama. Örnek: ["LUNA/USDT", "FTT/USDT"]
+  max_age_hours: 168     # Kara listeye eklenen coin kaç saat sonra tekrar tarınsın (168 = 1 hafta)
+
+
+# ---- TELEGRAM AYARLARI ------------------------------------
+telegram:
+  chat_id: ""            # .env dosyasından otomatik gelir, burayı boş bırak
+  parse_mode: "HTML"     # Mesaj formatı (HTML = bold, italik, link desteği)
+  disable_web_page_preview: true   # Linklerin önizlemesini kapatır (temiz görünüm)
+  max_message_length: 4096         # Telegram mesaj limiti
+
+
+# ---- LOG AYARLARI -----------------------------------------
+logging:
+  level: "INFO"          # Ne kadar detaylı log? DEBUG=çok fazla, INFO=normal, WARNING=sadece hatalar
+  file: "logs/pinger.log"
+  max_bytes: 10485760    # Log dosyası max 10MB olsun
+  backup_count: 5        # 5 eski log dosyası tut
+  format: "%(asctime)s | %(name)s | %(levelname)s | %(message)s"

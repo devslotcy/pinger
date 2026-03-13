@@ -1,0 +1,22 @@
+# Secrets - NEVER commit
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Bot runtime
+logs/
+data/*.db
+data/*.csv
+data/*.pkl
+models/*.h5
+models/*.keras
+models/*.pkl
+
+# OS
+.DS_Store
+Thumbs.db

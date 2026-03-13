@@ -1,0 +1,23 @@
+# Pinger v2.0 Dependencies
+
+# Exchange
+ccxt>=4.2.0
+
+# HTTP
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+
+# Data
+pandas>=2.0.0
+numpy>=1.26.0
+
+# AI/ML
+torch>=2.1.0
+scikit-learn>=1.3.0
+
+# Config
+python-dotenv>=1.0.0
+PyYAML>=6.0.1
+
+# Telegram (async seçeneği için, notifier requests kullanıyor ama ileride gerekecek)
+python-telegram-bot>=20.0
