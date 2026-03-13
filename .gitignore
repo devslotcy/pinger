@@ -13,6 +13,7 @@ logs/
 data/*.db
 data/*.csv
 data/*.pkl
+data/ohlcv_cache/
 models/*.h5
 models/*.keras
 models/*.pkl
